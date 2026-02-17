@@ -1,0 +1,37 @@
+[
+  {
+    "city": "Islamabad",
+    "temp": 21,
+    "desc": "Cloudy",
+    "icon": "https://openweathermap.org/img/wn/03d@4x.png",
+    "timestamp": "5:03:10 PM"
+  },
+  {
+    "city": "Dubai",
+    "temp": 26,
+    "desc": "Cloudy",
+    "icon": "https://openweathermap.org/img/wn/03d@4x.png",
+    "timestamp": "5:03:02 PM"
+  },
+  {
+    "city": "Munich",
+    "temp": 1,
+    "desc": "Foggy",
+    "icon": "https://openweathermap.org/img/wn/50d@4x.png",
+    "timestamp": "1:24:33 PM"
+  },
+  {
+    "city": "Zurich",
+    "temp": 4,
+    "desc": "Foggy",
+    "icon": "https://openweathermap.org/img/wn/50d@4x.png",
+    "timestamp": "1:24:30 PM"
+  },
+  {
+    "city": "Bhakkar",
+    "temp": 19,
+    "desc": "Cloudy",
+    "icon": "https://openweathermap.org/img/wn/03d@4x.png",
+    "timestamp": "1:24:26 PM"
+  }
+]

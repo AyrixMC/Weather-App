@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinematic Weather</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            --text-color: #ffffff;
+            --accent-color: rgba(255, 255, 255, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background: transparent; 
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- BACKGROUND VIDEO --- */
+        #bg-video {
+            position: fixed;
+            top: 50%; 
+            left: 50%;
+            min-width: 100%; 
+            min-height: 100%;
+            width: auto; 
+            height: auto;
+            z-index: -100;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            filter: brightness(0.6);
+            transition: opacity 1s ease;
+        }
+
+        /* --- GLASS CONTAINER --- */
+        .container {
+            width: 90%;
+            max-width: 420px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            border-radius: 35px;
+            padding: 35px;
+            text-align: center;
+            color: var(--text-color);
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* --- TIME WIDGET (New) --- */
+        .time-widget {
+            margin-bottom: 5px;
+        }
+        .live-time {
+            font-size: 2.5rem;
+            font-weight: 200;
+            line-height: 1;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .live-date {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 5px;
+        }
+
+        h1 {
+            font-weight: 600;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        /* --- NEW DEVELOPER CREDIT STYLE --- */
+        .dev-credit {
+            font-size: 0.75rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- SEARCH BAR --- */
+        form {
+            display: flex;
+            background: var(--glass-bg);
+            border-radius: 50px;
+            padding: 5px;
+            border: 1px solid var(--glass-border);
+            transition: 0.3s;
+        }
+
+        form:focus-within {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 300;
+        }
+        input::placeholder { color: rgba(255, 255, 255, 0.6); }
+
+        button {
+            background: white;
+            color: #333;
+            border: none;
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        button:hover { transform: scale(1.1); background: #fff; }
+        
+        /* Loading Spinner Animation */
+        .fa-spinner { animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* --- WEATHER RESULT --- */
+        .weather-box {
+            animation: slideUp 0.6s ease-out;
+            margin-bottom: 10px;
+        }
+
+        .location { font-size: 1.5rem; font-weight: 600; margin-bottom: 5px; }
+        
+        .temp-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .temp {
+            font-size: 5rem;
+            font-weight: 200;
+            line-height: 1;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .icon img {
+            width: 80px;
+            height: 80px;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.4));
+        }
+
+        .desc {
+            font-size: 1.1rem;
+            text-transform: capitalize;
+            font-weight: 300;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        /* --- DETAILS GRID (New Design) --- */
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .detail-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: 0.2s;
+        }
+
+        .detail-card:hover { background: rgba(255, 255, 255, 0.2); }
+
+        .detail-card i { font-size: 1.2rem; margin-bottom: 5px; opacity: 0.8; }
+        .detail-label { font-size: 0.75rem; opacity: 0.7; text-transform: uppercase; }
+        .detail-val { font-size: 1.1rem; font-weight: 600; margin-top: 2px; }
+
+        /* --- HISTORY --- */
+        .history {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 15px;
+            text-align: left;
+            max-height: 120px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+
+        .history::-webkit-scrollbar { width: 4px; }
+        .history::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
+
+        .history h3 {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            opacity: 0.6;
+            margin-bottom: 10px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            background: rgba(255, 255, 255, 0.05);
+            font-size: 0.85rem;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .history-item:hover { background: rgba(255, 255, 255, 0.15); }
+
+        .error {
+            background: rgba(255, 80, 80, 0.3);
+            border: 1px solid rgba(255, 80, 80, 0.5);
+            padding: 12px;
+            border-radius: 15px;
+            color: #ffe6e6;
+            font-size: 0.9rem;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <video id="bg-video" autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80">
+        <source src="<%= typeof currentVideo !== 'undefined' ? currentVideo : 'https://videos.pexels.com/video-files/856973/856973-hd_1920_1080_25fps.mp4' %>" type="video/mp4">
+    </video>
+
+    <div class="container">
+        
+        <div class="time-widget">
+            <div class="live-time" id="clock">00:00</div>
+            <div class="live-date" id="date">Loading...</div>
+        </div>
+
+        <div>
+            <h1>Global Weather</h1>
+            <div class="dev-credit">Developer AyrixMC</div>
+        </div>
+
+        <form action="/" method="POST" onsubmit="document.getElementById('search-btn').innerHTML = '<i class=\'fas fa-spinner\'></i>'">
+            <input type="text" name="city" placeholder="Search City..." autocomplete="off" required>
+            <button type="submit" id="search-btn"><i class="fas fa-search"></i></button>
+        </form>
+
+        <% if (error) { %>
+            <div class="error">⚠ <%= error %></div>
+        <% } %>
+
+        <% if (weather) { %>
+            <div class="weather-box">
+                <div class="location"><%= weather.city %>, <%= weather.country %></div>
+                
+                <div class="temp-wrapper">
+                    <div class="icon">
+                        <img src="<%= weather.icon %>" alt="weather icon">
+                    </div>
+                    <div class="temp"><%= weather.temp %>°</div>
+                </div>
+                
+                <div class="desc"><%= weather.desc %></div>
+
+                <div class="details-grid">
+                    <div class="detail-card">
+                        <i class="fas fa-wind"></i>
+                        <span class="detail-label">Wind Speed</span>
+                        <span class="detail-val"><%= weather.wind %> km/h</span>
+                    </div>
+                    <div class="detail-card">
+                        <i class="fas fa-tint"></i>
+                        <span class="detail-label">Humidity</span>
+                        <span class="detail-val"><%= weather.humidity === "N/A" ? "-" : weather.humidity + "%" %></span>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+
+        <div class="history">
+            <h3>Recent History</h3>
+            <% if (history.length > 0) { %>
+                <% history.forEach(function(item) { %>
+                    <div class="history-item" onclick="document.querySelector('input').value='<%= item.city %>';">
+                        <span><%= item.city %></span>
+                        <span><%= item.temp %>°</span>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <p style="opacity: 0.5; font-size: 0.8rem; padding: 5px;">No searches yet.</p>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Script to update Clock -->
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const timeOptions = { hour: 'numeric', minute: '2-digit', hour12: true };
+            const dateOptions = { weekday: 'long', day: 'numeric', month: 'short' };
+            
+            document.getElementById('clock').innerText = now.toLocaleTimeString('en-US', timeOptions);
+            document.getElementById('date').innerText = now.toLocaleDateString('en-US', dateOptions);
+        }
+        
+        setInterval(updateClock, 1000);
+        updateClock(); 
+    </script>
+
+</body>
+</html>
