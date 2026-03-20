@@ -12,7 +12,6 @@ A dynamic weather web application that shows real-time weather data with **immer
 - **Search history** — keeps track of your previously searched cities
 - Fast and lightweight — built with Node.js and EJS
 
-
 ## 🎥 How the Dynamic Background Works
 
 The app checks the current temperature of the searched city:
@@ -22,8 +21,6 @@ The app checks the current temperature of the searched city:
 
 This gives the user an immersive visual experience that matches real-world conditions!
 
----
-
 ## 📸 Preview
 
 > Search for a city → see the weather → watch the background come alive!
@@ -32,6 +29,5 @@ This gives the user an immersive visual experience that matches real-world condi
 
 **AyrixMC**  
 GitHub: [@AyrixMC](https://github.com/AyrixMC)
-
 
 > ⭐ If you like this project, give it a star on GitHub!
